@@ -39,6 +39,8 @@ const App = () => {
       setFilter(target.value)
     }
   
+  
+  // Ця функція є в contacts-selectors!!!!!!
     const getFilteredContacts = () => {
       if (!filter) {
         return contacts;
@@ -48,6 +50,7 @@ const App = () => {
       const filteredContacts = contacts.filter(({ name }) => name.toLowerCase().includes(normalizedFilter));
       return filteredContacts;
     }
+  // ----------------------
     
     const FilterContacts = getFilteredContacts();
 

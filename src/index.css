@@ -27,6 +27,11 @@ h3{
 }
 .container {
   margin: 80px;
+  height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 28px;
+      color: #010101;
 }
 
 .filter-input{

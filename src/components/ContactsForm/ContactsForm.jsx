@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {  getAllContacts} from '../../redux/contacts/contacts-selectors'
+import { addContact } from '../../redux/contacts/contacts-slice'
 import { nanoid } from "nanoid";
 import css from './contacts-form.module.css'
 
@@ -7,8 +10,25 @@ const INITIAL_STATE = {
     number: '',
 }
 
-const ContactsForm = ({onSubmit}) => {
+
+const ContactsForm = () => {
   const [state, setState] = useState(INITIAL_STATE);
+
+  const contacts = useSelector(getAllContacts);
+  const dispatch = useDispatch();
+
+  const onAddContact = (data) => {
+    // Якщо контакт вже існує:
+    const isExist = contacts.some(
+      (contact) => contact.name.toLowerCase() === data.name.toLowerCase());
+    
+    if (isExist) {
+      alert(`${data.name} is already in contacts.`);
+      return
+    }
+
+    dispatch(addContact(data));
+  };
 
   let contactNameId = nanoid();
   let contactNumberId = nanoid();
@@ -20,7 +40,7 @@ const ContactsForm = ({onSubmit}) => {
 
   const handleSubmit = (e)=> {
         e.preventDefault();
-        onSubmit({...state});
+        onAddContact({...state});
         setState({...INITIAL_STATE});
   }
   

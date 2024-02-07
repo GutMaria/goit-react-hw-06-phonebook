@@ -1,18 +1,22 @@
-import {  useEffect, useState} from "react";
+// import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import ContactsForm from './ContactsForm/ContactsForm';
 import ContactsList from './ContactsList/ContactsList'
-import { nanoid } from "nanoid";
+// import { nanoid } from "nanoid";
+
+import { getFilteredContacts, getAllContacts} from '../redux/contacts/contacts-selectors'
+import { addContact, deleteContact } from '../redux/contacts/contacts-slice'
+import {setFilter} from '../redux/filter/filter-slice'
 
 
 const App = () => {
-  // якщо в localStorage є збережені данні 
-  const [contacts, setContacts] = useState(() => JSON.parse(window.localStorage.getItem('contacts')) ?? []);
-  const [filter, setFilter] = useState('');
 
-  useEffect(() => {localStorage.setItem('contacts', JSON.stringify(contacts)) }, [contacts])
+  const contacts = useSelector(getAllContacts);
+  const dispatch = useDispatch();
   
 
-  const addContact = (data) => {
+  const onAddContact = (data) => {
     // Якщо контакт вже існує:
     const isExist = contacts.some(
       (contact) => contact.name.toLowerCase() === data.name.toLowerCase());
@@ -21,36 +25,18 @@ const App = () => {
       alert(`${data.name} is already in contacts.`);
       return
     }
-    // Якщо контакта не існує додаємо його в state
-    setContacts((prevState) => {
-      const newContact = { id: nanoid(), ...data, };
 
-      return [...prevState, newContact];
-    });
+    dispatch(addContact(data));
   };
 
-  const deleteContact = (id) => {
-    setContacts((prevContacts) => {
-      return (prevContacts.filter(contact => contact.id !== id))
-    })
+  const onDeleteContact = (id) => {
+    dispatch(deleteContact(id))
   }
     
     const changeFitler = ({ target }) => {
-      setFilter(target.value)
+      dispatch(setFilter(target.value))
     }
   
-  
-  // Ця функція є в contacts-selectors!!!!!!
-    const getFilteredContacts = () => {
-      if (!filter) {
-        return contacts;
-      }
-
-      const normalizedFilter = filter.toLowerCase();
-      const filteredContacts = contacts.filter(({ name }) => name.toLowerCase().includes(normalizedFilter));
-      return filteredContacts;
-    }
-  // ----------------------
     
     const FilterContacts = getFilteredContacts();
 
@@ -65,7 +51,7 @@ const App = () => {
         }}
       >
         <h1>Phonebook</h1>
-        <ContactsForm onSubmit={addContact} />
+        <ContactsForm onSubmit={onAddContact} />
         {/* якщо є список контактів рендеримо розмітку, якщо пусто - то ні */}
         {Boolean(contacts.length) && <>
           <h2>Contacts</h2>
@@ -73,7 +59,7 @@ const App = () => {
             <h3>Find contacts by name:</h3>
             <input name="filter" onChange={changeFitler} className="filter-input" />
           </div>
-          <ContactsList items={FilterContacts} deleteContact={deleteContact} />
+          <ContactsList items={FilterContacts} deleteContact={onDeleteContact} />
         </>
         }
       </div>

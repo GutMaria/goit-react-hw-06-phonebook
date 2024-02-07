@@ -38,7 +38,7 @@ const App = () => {
     }
   
     
-    const FilterContacts = getFilteredContacts();
+    const FilterContacts = useSelector(getFilteredContacts);
 
     return (
       <div className="container"

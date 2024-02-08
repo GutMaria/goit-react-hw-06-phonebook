@@ -28,6 +28,7 @@ const ContactsForm = () => {
     }
 
     dispatch(addContact(data));
+    setState({...INITIAL_STATE});
   };
 
   let contactNameId = nanoid();
@@ -41,7 +42,6 @@ const ContactsForm = () => {
   const handleSubmit = (e)=> {
         e.preventDefault();
         onAddContact({...state});
-        setState({...INITIAL_STATE});
   }
   
     return (
